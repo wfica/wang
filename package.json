@@ -1,0 +1,31 @@
+{
+  "name": "wang",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node ./bin/www",
+    "client": "node start-client.js",
+    "devstart": "nodemon concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bootstrap": "^4.2.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "express-validator": "^5.3.1",
+    "http-errors": "~1.6.2",
+    "mongoose": "^5.4.0",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11",
+    "react-phone-number-input": "^2.2.20",
+    "react-validation": "^3.0.7",
+    "reactstrap": "^6.5.0",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.9"
+  }
+}
