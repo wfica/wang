@@ -78,6 +78,7 @@ exports.guest_create_post = [
         }
         // Successful - send new  guest record.
         // res.redirect("/catalog/calendar");
+        debug(guest);
         res.send({ guest: guest });
       });
     }

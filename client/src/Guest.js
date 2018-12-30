@@ -50,6 +50,10 @@ class Guest extends Component {
       .catch(err => this.setState({ deleteSuccess: false }));
   };
 
+  updateGuest = () => {
+    
+  }
+
   render() {
     if (!this.state.guest) {
       return <Redirect to="/catalog/calendar" />;
@@ -88,6 +92,9 @@ class Guest extends Component {
         <ButtonToolbar>
           <Button bsStyle="danger" onClick={this.deleteGuest}>
             Usuń gościa
+          </Button>
+          <Button bsStyle="warning" onClick={this.updateGuest}>
+            Aktualizuj dane gościa
           </Button>
         </ButtonToolbar>
       </div>

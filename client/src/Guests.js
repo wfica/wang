@@ -2,6 +2,7 @@ import React from "react";
 import { Alert, Table } from "react-bootstrap";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import DbError  from "./DbError";
 
 class Guests extends React.Component {
   constructor(props) {
@@ -39,16 +40,7 @@ class Guests extends React.Component {
       );
     }
     if (this.state.error !== null) {
-      return (
-        <div className="col-sm-4 col-xs-12">
-          <Alert bsStyle="danger">
-            <strong>
-              {" "}
-              Błąd bazy danych. Skontaktuj się z administratorem.
-            </strong>
-          </Alert>
-        </div>
-      );
+      return <DbError />;
     }
     const list = this.state.guests_list;
     return Array.isArray(list) && list.length > 0 ? (
