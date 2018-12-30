@@ -1,6 +1,6 @@
 const Guest = require("../models/guest");
-const { body, validationResult } = require("express-validator/check");
-const { sanitizeBody } = require("express-validator/filter");
+const { body, validationResult, param } = require("express-validator/check");
+const { sanitizeBody, sanitizeParam } = require("express-validator/filter");
 var debug = require("debug")("wang:server");
 
 // Handle Guests list on GET.
@@ -79,6 +79,39 @@ exports.guest_create_post = [
         // Successful - send new  guest record.
         // res.redirect("/catalog/calendar");
         res.send({ guest: guest });
+      });
+    }
+  }
+];
+
+// Handle Guest create on POST.
+exports.guest_delete_post = [
+  // Validate fields.
+  param("id")
+    .isLength({ min: 1 })
+    .trim()
+    .withMessage("ID must be specified.")
+    .isAlphanumeric()
+    .withMessage("ID has non-alphanumeric characters."),
+
+  // Sanitize fields.
+  sanitizeParam("id")
+    .trim()
+    .escape(),
+
+  // Process request after validation and sanitization.
+  (req, res) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.send({ errors: errors.array() });
+    } else {
+      // Data from form is valid.
+      Guest.findByIdAndDelete(req.params.id, (err, response) => {
+        if (err) {
+          res.send({ errors: err });
+        }
+        res.send({ success: true });
       });
     }
   }

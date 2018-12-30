@@ -32,14 +32,18 @@ class Guest extends Component {
     this.setState({ fromGuestCreateAlert: false });
   };
 
+  onDismissDeleteSuccessAlert = () => {
+    this.setState({ guest: null });
+  };
+
   deleteGuest = () => {
     axios
       .post("/catalog/guest/" + this.state.guest._id + "/delete")
       .then(response => {
-        if ("errors" in this.response.data) {
+        if ("errors" in response.data) {
           this.setState({ deleteSuccess: false });
         } else {
-          this.setState({ deleteSuccess: true });
+          this.setState({ deleteSuccess: response.data.success });
           setTimeout(() => this.setState({ guest: null }), 5000);
         }
       })
@@ -57,8 +61,8 @@ class Guest extends Component {
       return (
         <div className="col-sm-4 col-xs-12">
           <Alert bsStyle="info" onDismiss={this.onDismissDeleteSuccessAlert}>
-            <strong> Usunięto gościa.</strong> Zostaniesz przekierowny na główną
-            stronę.
+            <strong> Usunięto gościa.</strong> <br /> Zostaniesz przekierowny na
+            główną stronę.
           </Alert>
         </div>
       );

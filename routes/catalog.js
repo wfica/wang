@@ -12,8 +12,7 @@ router.get("/guests", guest_controller.guests_list);
 // POST request for creating guest
 router.post("/guest/create", guest_controller.guest_create_post);
 
-router.get("/test", function(req, res) {
-  res.send("to jest test");
-});
+// POST request for deleting guest
+router.post("/guest/:id/delete", guest_controller.guest_delete_post);
 
 module.exports = router;
