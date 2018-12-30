@@ -2,11 +2,6 @@
 import React from "react";
 import "./Calendar.scss";
 
-const booked = [
-  { start: new Date(2018, 11, 17), lenght: 3 },
-  { start: new Date(2018, 10, 18), lenght: 10 }
-];
-
 const consts = {
   months: [
     "Styczeń",

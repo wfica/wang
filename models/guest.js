@@ -26,13 +26,7 @@ const GuestSchema = new Schema({
   phone: {
     type: String,
     required: [true, "Guest phone number required"],
-    validate: {
-      validator: val => {
-        const phoneRegex = /^((\(0-\d\d\) \d\d\d \d\d \d\d)|((\d{3} ){3}))$/;
-        return phoneRegex.test(val);
-      },
-      msg: "Guest phone number incorrect"
-    }
+    maxLength: 100
   }
 });
 

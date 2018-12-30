@@ -1,15 +1,11 @@
 import React, { Component } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Switch,
-  Redirect
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Alert, Navbar, NavItem, Nav } from "react-bootstrap";
 import Calendar from "./Calendar";
 import Guests from "./Guests";
+import Guest from "./Guest";
 import GuestCreate from "./GuestCreate";
+// import { createBrowserHistory } from 'history';
 
 function NotImplemented() {
   return (
@@ -35,7 +31,6 @@ class Catalog extends Component {
                 componentClass={Link}
                 href="/catalog/guests"
                 to="/catalog/guests"
-                active={window.location.pathname === "/catalog/guests"}
               >
                 Goście
               </NavItem>
@@ -44,7 +39,6 @@ class Catalog extends Component {
                 componentClass={Link}
                 href="/catalog/guest/create"
                 to="/catalog/guest/create"
-                active={window.location.pathname === "/catalog/guest/create"}
               >
                 Dodaj gościa
               </NavItem>
@@ -52,9 +46,10 @@ class Catalog extends Component {
           </Navbar>
 
           <Switch>
-            <Route path="/catalog/calendar" component={Calendar} />
-            <Route path="/catalog/guests" component={Guests} />
-            <Route path="/catalog/guest/create" component={GuestCreate} />
+            <Route exact path="/catalog/calendar" component={Calendar} />
+            <Route exact path="/catalog/guests" component={Guests} />
+            <Route exact path="/catalog/guest/create" component={GuestCreate} />
+            <Route exact path="/catalog/guest" component={Guest} />
             {/* <Redirect from="/" to="/calendar" />*/}
             <Route component={NotImplemented} />
           </Switch>

@@ -6,7 +6,7 @@
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node ./bin/www",
     "client": "node start-client.js",
-    "devstart": "nodemon concurrently \"npm run server\" \"npm run client\""
+    "devstart": "concurrently \"nodemon ./bin/www\" \"npm run client\""
   },
   "dependencies": {
     "axios": "^0.18.0",
