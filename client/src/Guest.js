@@ -51,12 +51,22 @@ class Guest extends Component {
   };
 
   updateGuest = () => {
-    
-  }
+    this.setState({ updateGuest: true });
+  };
 
   render() {
     if (!this.state.guest) {
       return <Redirect to="/catalog/calendar" />;
+    }
+    if (this.state.updateGuest) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/catalog/guest/update",
+            state: { guest: this.state.guest }
+          }}
+        />
+      );
     }
     if (this.state.deleteSuccess === false) {
       return <DbError />;

@@ -15,4 +15,7 @@ router.post("/guest/create", guest_controller.guest_create_post);
 // POST request for deleting guest
 router.post("/guest/:id/delete", guest_controller.guest_delete_post);
 
+// POST request for deleting guest
+router.post("/guest/:id/update", guest_controller.guest_update_post);
+
 module.exports = router;

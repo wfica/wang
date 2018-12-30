@@ -5,7 +5,7 @@ import Calendar from "./Calendar";
 import Guests from "./Guests";
 import Guest from "./Guest";
 import GuestCreate from "./GuestCreate";
-// import { createBrowserHistory } from 'history';
+import GuestUpdate from "./GuestUpdate";
 
 function NotImplemented() {
   return (
@@ -49,6 +49,7 @@ class Catalog extends Component {
             <Route exact path="/catalog/calendar" component={Calendar} />
             <Route exact path="/catalog/guests" component={Guests} />
             <Route exact path="/catalog/guest/create" component={GuestCreate} />
+            <Route exact path="/catalog/guest/update" component={GuestUpdate} />
             <Route exact path="/catalog/guest" component={Guest} />
             {/* <Redirect from="/" to="/calendar" />*/}
             <Route component={NotImplemented} />

@@ -31,6 +31,12 @@ class GuestForm extends React.Component {
     };
   }
 
+  componentWillMount() {
+    if ("guest_to_update" in this.props) {
+      this.setState(this.props.guest_to_update);
+    }
+  }
+
   validateName = name => {
     if (name === null) return null;
     const length = name.length;

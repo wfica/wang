@@ -117,3 +117,69 @@ exports.guest_delete_post = [
     }
   }
 ];
+
+// Handle Guest create on POST.
+exports.guest_update_post = [
+  // Validate fields.
+  body("first_name")
+    .isLength({ min: 1 })
+    .isLength({ max: 100 })
+    .trim()
+    .withMessage("First name must be specified.")
+    .isAlphanumeric()
+    .withMessage("First name has non-alphanumeric characters."),
+  body("family_name")
+    .isLength({ max: 100 })
+    .isLength({ min: 1 })
+    .trim()
+    .withMessage("Family name must be specified.")
+    .isAlphanumeric()
+    .withMessage("Family name has non-alphanumeric characters."),
+  body("email")
+    .isEmail()
+    .isLength({ max: 100 })
+    .isLength({ min: 1 })
+    .trim(),
+
+  // Sanitize fields.
+  sanitizeBody("first_name")
+    .trim()
+    .escape(),
+  sanitizeBody("family_name")
+    .trim()
+    .escape(),
+  sanitizeBody("email")
+    .trim()
+    .escape(),
+  sanitizeBody("phone")
+    .trim()
+    .escape(),
+
+  (req, res) => {
+    debug("post update guest");
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.send({ errors: errors.array() });
+      return;
+    } else {
+      const guest = new Guest({
+        first_name: req.body.first_name,
+        family_name: req.body.family_name,
+        email: req.body.email,
+        phone: req.body.phone,
+        _id : req.params.id
+      });
+      Guest.findByIdAndUpdate(req.params.id, guest, {}, function(
+        err,
+        theguest
+      ) {
+        if (err) {
+          res.send({ errors: err });
+        } else {
+          res.send({ guest: theguest });
+        }
+      });
+    }
+  }
+];
