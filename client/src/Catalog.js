@@ -6,6 +6,8 @@ import Guests from "./Guests";
 import Guest from "./Guest";
 import GuestCreate from "./GuestCreate";
 import GuestUpdate from "./GuestUpdate";
+import Bookings from "./Bookings";
+
 
 function NotImplemented() {
   return (
@@ -42,12 +44,21 @@ class Catalog extends Component {
               >
                 Dodaj gościa
               </NavItem>
+
+              <NavItem
+                componentClass={Link}
+                href="/catalog/bookings"
+                to="/catalog/bookings"
+              >
+                Rezerwacje
+              </NavItem>
             </Nav>
           </Navbar>
 
           <Switch>
             <Route exact path="/catalog/calendar" component={Calendar} />
             <Route exact path="/catalog/guests" component={Guests} />
+            <Route exact path="/catalog/bookings" component={Bookings} />
             <Route exact path="/catalog/guest/create" component={GuestCreate} />
             <Route exact path="/catalog/guest/update" component={GuestUpdate} />
             <Route exact path="/catalog/guest" component={Guest} />

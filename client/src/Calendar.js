@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import React from "react";
 import "./Calendar.scss";
 
@@ -26,42 +25,42 @@ class CalendarHeader extends React.Component {
     return (
       <div className="calendar-header panel panel-default">
         <table>
-        <tbody>
-          <tr>
-            <th className="prev" onClick={() => this.props.prevYear()}>
-              <span className="glyphicon glyphicon-chevron-left"> </span>
-            </th>
-            <th
-              className="year-title year-neighbor2 hidden-sm hidden-xs"
-              onClick={() => this.props.changeYear(-2)}
-            >
-              {year - 2}
-            </th>
-            <th
-              className="year-title year-neighbor hidden-xs"
-              onClick={() => this.props.changeYear(-1)}
-            >
-              {" "}
-              {year - 1}{" "}
-            </th>
-            <th className="year-title"> {year} </th>
-            <th
-              className="year-title year-neighbor hidden-xs"
-              onClick={() => this.props.changeYear(1)}
-            >
-              {" "}
-              {year + 1}{" "}
-            </th>
-            <th
-              className="year-title year-neighbor2 hidden-sm hidden-xs"
-              onClick={() => this.props.changeYear(2)}
-            >
-              {year + 2}
-            </th>
-            <th className="next" onClick={() => this.props.nextYear()}>
-              <span className="glyphicon glyphicon-chevron-right"> </span>
-            </th>
-          </tr>
+          <tbody>
+            <tr>
+              <th className="prev" onClick={() => this.props.prevYear()}>
+                <span className="glyphicon glyphicon-chevron-left"> </span>
+              </th>
+              <th
+                className="year-title year-neighbor2 hidden-sm hidden-xs"
+                onClick={() => this.props.changeYear(-2)}
+              >
+                {year - 2}
+              </th>
+              <th
+                className="year-title year-neighbor hidden-xs"
+                onClick={() => this.props.changeYear(-1)}
+              >
+                {" "}
+                {year - 1}{" "}
+              </th>
+              <th className="year-title"> {year} </th>
+              <th
+                className="year-title year-neighbor hidden-xs"
+                onClick={() => this.props.changeYear(1)}
+              >
+                {" "}
+                {year + 1}{" "}
+              </th>
+              <th
+                className="year-title year-neighbor2 hidden-sm hidden-xs"
+                onClick={() => this.props.changeYear(2)}
+              >
+                {year + 2}
+              </th>
+              <th className="next" onClick={() => this.props.nextYear()}>
+                <span className="glyphicon glyphicon-chevron-right"> </span>
+              </th>
+            </tr>
           </tbody>
         </table>
       </div>

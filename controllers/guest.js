@@ -172,12 +172,12 @@ exports.guest_update_post = [
       });
       Guest.findByIdAndUpdate(req.params.id, guest, {}, function(
         err,
-        theguest
+        _theguest
       ) {
         if (err) {
           res.send({ errors: err });
         } else {
-          res.send({ guest: theguest });
+          res.send({ guest: guest });
         }
       });
     }

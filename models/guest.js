@@ -30,13 +30,4 @@ const GuestSchema = new Schema({
   }
 });
 
-GuestSchema.virtual("name").get(function() {
-  return this.family_name + ", " + this.first_name;
-});
-
-// Virtual for guest's URL
-GuestSchema.virtual("url").get(function() {
-  return "/catalog/guest/" + this._id;
-});
-
 module.exports = mongoose.model("Guest", GuestSchema);
