@@ -1,7 +1,11 @@
 const Guest = require("../models/guest");
+const Booking = require("../models/booking");
 const { body, validationResult, param } = require("express-validator/check");
 const { sanitizeBody, sanitizeParam } = require("express-validator/filter");
 var debug = require("debug")("wang:server");
+const async = require("async");
+const moment = require("moment");
+const plLocale = require("moment/locale/pl");
 
 // Handle Guests list on GET.
 exports.guests_list = function(req, res, err) {
@@ -101,19 +105,47 @@ exports.guest_delete_post = [
     .escape(),
 
   // Process request after validation and sanitization.
-  (req, res) => {
+  (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
+    debug(errors);
     if (!errors.isEmpty()) {
       res.send({ errors: errors.array() });
     } else {
-      // Data from form is valid.
-      Guest.findByIdAndDelete(req.params.id, (err, response) => {
-        if (err) {
-          res.send({ errors: err });
+      async.parallel(
+        {
+          bookings: function(cb) {
+            Booking.find().exec(cb);
+          }
+        },
+        (err, results) => {
+          if (err) {
+            return next(err);
+          }
+          const conflict = results.bookings.find(
+            booking => booking.guest.toString() === req.params.id
+          );
+
+          if (conflict) {
+            moment.locale("pl", plLocale);
+            res.send({
+              errors:
+                "Nie można usunąć gościa, który ma rezerwację. Rezerwacja w dniach " +
+                moment(conflict.start).format("Do MMM YYYY") +
+                " - " +
+                moment(conflict.end).format("Do MMM YYYY")
+            });
+          } else {
+            // Data from form is valid.
+            Guest.findByIdAndDelete(req.params.id, (err, response) => {
+              if (err) {
+                res.send({ errors: err });
+              }
+              res.send({ success: true });
+            });
+          }
         }
-        res.send({ success: true });
-      });
+      );
     }
   }
 ];
@@ -168,7 +200,7 @@ exports.guest_update_post = [
         family_name: req.body.family_name,
         email: req.body.email,
         phone: req.body.phone,
-        _id : req.params.id
+        _id: req.params.id
       });
       Guest.findByIdAndUpdate(req.params.id, guest, {}, function(
         err,

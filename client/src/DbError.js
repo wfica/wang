@@ -20,7 +20,8 @@ class DbError extends Component {
           onDismiss={() => this.setState({ dismissAlert: true })}
         >
           <strong> Błąd bazy danych.</strong> <br /> Skontaktuj się z
-          administratorem.
+          administratorem. <br />
+          {this.props.alert}
         </Alert>
       </div>
     );

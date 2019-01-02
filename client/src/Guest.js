@@ -41,7 +41,7 @@ class Guest extends Component {
       .post("/catalog/guest/" + this.state.guest._id + "/delete")
       .then(response => {
         if ("errors" in response.data) {
-          this.setState({ deleteSuccess: false });
+          this.setState({ deleteSuccess: false, errors: response.data.errors });
         } else {
           this.setState({ deleteSuccess: response.data.success });
           setTimeout(() => this.setState({ guest: null }), 5000);
@@ -69,7 +69,7 @@ class Guest extends Component {
       );
     }
     if (this.state.deleteSuccess === false) {
-      return <DbError />;
+      return <DbError alert={this.state.errors}/>;
     }
     if (this.state.deleteSuccess === true) {
       return (
