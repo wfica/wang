@@ -19,7 +19,7 @@ class GuestUpdate extends React.Component {
     axios
       .post("/catalog/guest/" + guest._id + "/update", guest)
       .then(response => {
-        console.log(response);
+        
         if ("errors" in response.data) {
           this.setState({ errors: response.data.errors });
         } else {

@@ -85,7 +85,7 @@ class CalendarMonths extends React.Component {
     axios
       .get("/catalog/bookings")
       .then(bookings_list => {
-        console.log(bookings_list);
+
         const sanitized = bookings_list.data.map(booking => ({
           start: new Date(booking.start),
           end: new Date(booking.end),
@@ -121,7 +121,7 @@ class CalendarMonths extends React.Component {
     if (!this.state.bookings_list) {
       return { is_booked: false, info: "" };
     }
-    console.log(this.state.bookings_list);
+
     const conflict = this.state.bookings_list.find(
       booking => night > booking.start && night < booking.end
     );
@@ -226,7 +226,7 @@ class CalendarMonths extends React.Component {
   renderDay = day => {
     const day_selected_class_name = this.daySelectedClassName(day);
     if (typeof day_selected_class_name !== "undefined") {
-      console.log("day_selected_class_name", day_selected_class_name, day);
+
       return (
         <td
           className={day_selected_class_name.class}
@@ -257,7 +257,7 @@ class CalendarMonths extends React.Component {
       <td
         className={"day " + is_booked.info}
         onClick={() => {
-          console.log("click " + this.allowClick(day) ? "allowed" : "declined");
+
           if (this.allowClick(day)) {
             this.props.handleDayClick(day);
           }
@@ -270,7 +270,6 @@ class CalendarMonths extends React.Component {
 
   render_days = month_num => {
     const year = this.props.year;
-    const disabled = this.props.read_only ? " disabled " : "";
     let currDate = new Date(year, month_num, 1);
     let days = new Array(currDate.getDay()).fill(
       <td className="day old"> </td>

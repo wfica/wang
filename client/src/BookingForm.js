@@ -58,8 +58,8 @@ class BookingForm extends React.Component {
         Uzupełnj pola poprawnie
       </Button>
     );
-    console.log("errors: ");
-    console.log(this.props.errors);
+    
+    
     const errors =
       Array.isArray(this.props.errors) && this.props.errors.length > 0 ? (
         <div>
@@ -126,13 +126,13 @@ class BookingForm extends React.Component {
                       lists.splice(-1, 1);
                     }
                     lists.push(this.matchInput(value));
-                    console.log(lists);
+                    
                     return { input: value, guests_list: lists, guest: null };
                   });
                 }}
                 renderMenu={children => <div className="menu">{children}</div>}
                 renderItem={(item, isHighlighted) => {
-                  console.log(isHighlighted);
+                  
                   return (
                     <div
                       className={

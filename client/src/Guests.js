@@ -24,7 +24,7 @@ class Guests extends React.Component {
   }
 
   handleClick = guest => {
-    console.log("clicked on ", guest);
+    
     this.setState({ redirect_to: guest });
   };
 

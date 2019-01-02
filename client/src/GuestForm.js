@@ -1,12 +1,6 @@
 import React from "react";
 import validator from "validator";
-import {
-  FormGroup,
-  ControlLabel,
-  FormControl,
-  Button,
-  Alert
-} from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 import ReactPhoneInput from "react-phone-input-2";
 import { Redirect } from "react-router-dom";
 import FieldGroup from "./FieldGroup";
@@ -66,7 +60,6 @@ class GuestForm extends React.Component {
   };
 
   render() {
-    console.log(this.props);
     const submitButton = this.validateForm() ? (
       <Button type="submit" bsStyle="success">
         Zapisz

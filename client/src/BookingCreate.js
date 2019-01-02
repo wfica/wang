@@ -15,9 +15,9 @@ class BookingCreate extends React.Component {
   }
 
   handleClick = date => {
-    console.log(this.state.clicked);
+    
     const prev = this.state.clicked.findIndex(d => utils.sameDay(d, date));
-    console.log("prev index", prev);
+    
     if (prev === 0 || prev === 1) {
       // unclick clicked day
       this.setState((state, props) => {
@@ -33,7 +33,7 @@ class BookingCreate extends React.Component {
     }
     this.setState((state, props) => {
       const new_clicked = utils.addClickedDay(state.clicked, date);
-      console.log("new cl", new_clicked);
+      
       return { clicked: new_clicked };
     });
   };
@@ -52,7 +52,7 @@ class BookingCreate extends React.Component {
         )
       )
       .then(response => {
-        console.log(response);
+        
         if ("errors" in response.data) {
           this.setState({ errors: response.data.errors });
         } else {
