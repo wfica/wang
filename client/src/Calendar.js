@@ -3,24 +3,7 @@ import "./Calendar.scss";
 import axios from "axios";
 import DbError from "./DbError";
 import utils from "./utils";
-
-const consts = {
-  months: [
-    "Styczeń",
-    "Luty",
-    "Marzec",
-    "Kwiecień",
-    "Maj",
-    "Czerwiec",
-    "Lipiec",
-    "Sierpień",
-    "Wrzesień",
-    "Październik",
-    "Listopad",
-    "Grudzień"
-  ],
-  days: ["Nd", "Po", "Wt", "Śr", "Cz", "Pt", "Sb"]
-};
+import consts from "./consts";
 
 class CalendarHeader extends React.Component {
   render() {
@@ -85,7 +68,6 @@ class CalendarMonths extends React.Component {
     axios
       .get("/catalog/bookings")
       .then(bookings_list => {
-
         const sanitized = bookings_list.data.map(booking => ({
           start: new Date(booking.start),
           end: new Date(booking.end),
@@ -226,7 +208,6 @@ class CalendarMonths extends React.Component {
   renderDay = day => {
     const day_selected_class_name = this.daySelectedClassName(day);
     if (typeof day_selected_class_name !== "undefined") {
-
       return (
         <td
           className={day_selected_class_name.class}
@@ -257,7 +238,6 @@ class CalendarMonths extends React.Component {
       <td
         className={"day " + is_booked.info}
         onClick={() => {
-
           if (this.allowClick(day)) {
             this.props.handleDayClick(day);
           }
