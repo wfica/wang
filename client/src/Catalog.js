@@ -7,6 +7,7 @@ import Guest from "./Guest";
 import GuestCreate from "./GuestCreate";
 import GuestUpdate from "./GuestUpdate";
 import Bookings from "./Bookings";
+import Booking from "./Booking";
 import BookingCreate from "./BookingCreate";
 
 function NotImplemented() {
@@ -76,6 +77,7 @@ class Catalog extends Component {
               path="/catalog/booking/create"
               component={BookingCreate}
             />
+            <Route exact path="/catalog/booking" component={Booking} />
             <Route exact path="/catalog/guest/create" component={GuestCreate} />
             <Route exact path="/catalog/guest/update" component={GuestUpdate} />
             <Route exact path="/catalog/guest" component={Guest} />

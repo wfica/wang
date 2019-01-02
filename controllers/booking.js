@@ -101,6 +101,7 @@ exports.booking_create_post = [
             if (err) {
               return next(err);
             }
+            newBooking.guest = results.guest;
             res.send({ booking: newBooking });
           });
         }
