@@ -12,6 +12,8 @@ import { Redirect } from "react-router-dom";
 import DbError from "./DbError";
 import consts from "./consts";
 import utils from "./utils";
+import moment from "moment";
+import plLocale from "moment/locale/pl";
 
 class Bookings extends React.Component {
   constructor(props) {
@@ -23,6 +25,7 @@ class Bookings extends React.Component {
       redirect_to_booking: null,
       date: new Date()
     };
+    moment.locale('pl', plLocale);
   }
 
   componentDidMount() {
@@ -128,7 +131,7 @@ class Bookings extends React.Component {
                       this.setState({ redirect_to_booking: booking })
                     }
                   >
-                    {booking.start.toString()} - {booking.end.toString()}
+                    {moment(booking.start).format("Do MMM YYYY")} - {moment(booking.end).format("Do MMM YYYY")}
                   </td>
                   <td
                     onClick={() =>
