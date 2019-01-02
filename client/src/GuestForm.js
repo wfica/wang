@@ -9,16 +9,8 @@ import {
 } from "react-bootstrap";
 import ReactPhoneInput from "react-phone-input-2";
 import { Redirect } from "react-router-dom";
-
-function FieldGroup({ id, label, validationState, ...props }) {
-  return (
-    <FormGroup controlId={id} validationState={validationState}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-      <FormControl.Feedback />
-    </FormGroup>
-  );
-}
+import FieldGroup from "./FieldGroup";
+import "./GuestForm.scss";
 
 class GuestForm extends React.Component {
   constructor() {

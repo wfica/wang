@@ -1,5 +1,8 @@
 import React from "react";
 import "./Calendar.scss";
+import axios from "axios";
+import DbError from "./DbError";
+import utils from "./utils";
 
 const consts = {
   months: [
@@ -73,8 +76,25 @@ class CalendarMonths extends React.Component {
     super();
     this.state = {
       width: window.innerWidth,
-      month_ref: null
+      month_ref: null,
+      bookings_list: []
     };
+  }
+
+  componentDidMount() {
+    axios
+      .get("/catalog/bookings")
+      .then(bookings_list => {
+        console.log(bookings_list);
+        const sanitized = bookings_list.data.map(booking => ({
+          start: new Date(booking.start),
+          end: new Date(booking.end),
+          price: booking.price,
+          guest: booking.guest
+        }));
+        this.setState({ bookings_list: sanitized, db_error: null });
+      })
+      .catch(err => this.setState({ db_error: err }));
   }
 
   componentWillMount() {
@@ -91,19 +111,173 @@ class CalendarMonths extends React.Component {
     this.setState({ width: window.innerWidth });
   };
 
+  isDayStartOfBooking = day =>
+    this.state.bookings_list.some(booking => utils.sameDay(booking.start, day));
+
+  isDayEndOfBooking = day =>
+    this.state.bookings_list.some(booking => utils.sameDay(booking.end, day));
+
+  isNightBooked = night => {
+    if (!this.state.bookings_list) {
+      return { is_booked: false, info: "" };
+    }
+    console.log(this.state.bookings_list);
+    const conflict = this.state.bookings_list.find(
+      booking => night > booking.start && night < booking.end
+    );
+    const is_start = this.isDayStartOfBooking(night);
+    const is_end = this.isDayEndOfBooking(night);
+    if (conflict || (is_start && is_end)) {
+      return {
+        is_booked: true,
+        info: " day-occupied disabled ",
+        conflict: conflict
+      };
+    }
+    if (is_start) {
+      return {
+        is_booked: false,
+        info: " day-half-start ",
+        conflict: conflict
+      };
+    }
+    if (is_end) {
+      return {
+        is_booked: false,
+        info: " day-half-end "
+      };
+    }
+    return { is_booked: false, info: "" };
+  };
+
+  isDisabled = day => {
+    if (this.props.readOnly) {
+      return true;
+    }
+    if (
+      this.props.clicked &&
+      this.props.clicked.length === 2 &&
+      !this.props.clicked.some(e => utils.sameDay(e, day))
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  allowClick = date => {
+    const new_clicked = utils.addClickedDay(this.props.clicked, date);
+    if (new_clicked.length === 2) {
+      let currDate = new_clicked[0];
+      while (currDate < new_clicked[1]) {
+        if (this.isNightBooked(currDate).is_booked) {
+          return false;
+        }
+        currDate = new Date(
+          currDate.getFullYear(),
+          currDate.getMonth(),
+          currDate.getDate() + 1
+        );
+      }
+      return true;
+    }
+    return true;
+  };
+
+  isOneSelected = day => {
+    return (
+      this.props.clicked &&
+      this.props.clicked.length === 1 &&
+      utils.sameDay(this.props.clicked[0], day)
+    );
+  };
+
+  isStartSelected = day => {
+    return (
+      this.props.clicked &&
+      this.props.clicked.length === 2 &&
+      utils.sameDay(this.props.clicked[0], day)
+    );
+  };
+  isEndSelected = day => {
+    return (
+      this.props.clicked &&
+      this.props.clicked.length === 2 &&
+      utils.sameDay(this.props.clicked[1], day)
+    );
+  };
+  isBetweenSelected = day => {
+    return (
+      this.props.clicked &&
+      this.props.clicked.length === 2 &&
+      this.props.clicked[0] < day &&
+      this.props.clicked[1] > day
+    );
+  };
+
+  daySelectedClassName = day => {
+    const types = [
+      { f: this.isOneSelected, class: "day-selected" },
+      { f: this.isStartSelected, class: "day-selected-start" },
+      { f: this.isEndSelected, class: "day-selected-end" },
+      { f: this.isBetweenSelected, class: "day-selected-between" }
+    ];
+    return types.find(elem => elem.f(day));
+  };
+  renderDay = day => {
+    const day_selected_class_name = this.daySelectedClassName(day);
+    if (typeof day_selected_class_name !== "undefined") {
+      console.log("day_selected_class_name", day_selected_class_name, day);
+      return (
+        <td
+          className={day_selected_class_name.class}
+          onClick={
+            day_selected_class_name.class !== "day-selected-between"
+              ? () => {
+                  if (this.allowClick(day)) {
+                    this.props.handleDayClick(day);
+                  }
+                }
+              : null
+          }
+        >
+          <div className="day-content">{day.getDate()}</div>
+        </td>
+      );
+    }
+    const is_disabled = this.isDisabled(day);
+    const is_booked = this.isNightBooked(day);
+    if (is_disabled || is_booked.is_booked) {
+      return (
+        <td className={"day disabled " + is_booked.info}>
+          <div className="day-content">{day.getDate()}</div>
+        </td>
+      );
+    }
+    return (
+      <td
+        className={"day " + is_booked.info}
+        onClick={() => {
+          console.log("click " + this.allowClick(day) ? "allowed" : "declined");
+          if (this.allowClick(day)) {
+            this.props.handleDayClick(day);
+          }
+        }}
+      >
+        <div className="day-content">{day.getDate()}</div>
+      </td>
+    );
+  };
+
   render_days = month_num => {
     const year = this.props.year;
+    const disabled = this.props.read_only ? " disabled " : "";
     let currDate = new Date(year, month_num, 1);
     let days = new Array(currDate.getDay()).fill(
       <td className="day old"> </td>
     );
     const lastDate = new Date(year, month_num + 1, 1);
     while (currDate < lastDate) {
-      days.push(
-        <td className="day">
-          <div className="day-content">{currDate.getDate()}</div>
-        </td>
-      );
+      days.push(this.renderDay(currDate));
       currDate = new Date(year, month_num, currDate.getDate() + 1);
     }
     let res = [];
@@ -168,8 +342,14 @@ class CalendarMonths extends React.Component {
         </div>
       );
     });
-
-    return <div className="months-container">{months}</div>;
+    const db_error = this.state.db_error !== null ? <DbError /> : null;
+    return (
+      <div>
+        <div className="months-container">{months}</div>
+        <hr />
+        {db_error}
+      </div>
+    );
   }
 }
 
@@ -208,7 +388,12 @@ class Calendar extends React.Component {
           nextYear={this.nextYear}
           changeYear={offset => this.changeCurrDate(offset, 0, 0)}
         />
-        <CalendarMonths year={this.state.currDate.getFullYear()} />
+        <CalendarMonths
+          year={this.state.currDate.getFullYear()}
+          readOnly={"readOnly" in this.props ? this.props.readOnly : true}
+          clicked={this.props.clicked}
+          handleDayClick={this.props.handleDayClick}
+        />
       </div>
     );
   }

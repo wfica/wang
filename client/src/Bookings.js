@@ -78,7 +78,7 @@ class Bookings extends React.Component {
                 >
                   {booking.guest.first_name + " " + booking.guest.family_name}
                 </td>
-                <td> {booking.price}</td>
+                <td> {booking.price.$numberDecimal}</td>
               </tr>
             ))}
           </tbody>

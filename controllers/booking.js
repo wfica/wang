@@ -1,14 +1,16 @@
 const Booking = require("../models/booking");
 const Guest = require("../models/guest");
+const DefaultPrice = require("../models/default_price");
 const { body, validationResult } = require("express-validator/check");
 const { sanitizeBody } = require("express-validator/filter");
 const async = require("async");
+const validator = require("validator");
 const debug = require("debug")("wang:server");
 
 // Handle Bookings list on GET
 exports.bookings_list = function(req, res, next) {
   Booking.find()
-    .sort({start: -1})
+    .sort({ start: -1 })
     .populate("guest")
     .exec(function(err, bookings_list) {
       if (err) {
@@ -39,13 +41,15 @@ exports.booking_create_post = [
   body("start").isISO8601(),
   body("end").isISO8601(),
   body("price").isDecimal(),
-  body("guest").isMongoId(),
+  body("guest").custom(value => validator.isMongoId(value._id)),
   sanitizeBody("start")
     .trim()
-    .escape(),
+    .escape()
+    .toDate(),
   sanitizeBody("end")
     .trim()
-    .escape(),
+    .escape()
+    .toDate(),
   sanitizeBody("price")
     .trim()
     .escape(),
@@ -54,6 +58,7 @@ exports.booking_create_post = [
     .escape(),
   (req, res, next) => {
     const errors = validationResult(req);
+    debug(errors.array());
     if (!errors.isEmpty()) {
       next(errors.array());
     } else {
@@ -76,6 +81,7 @@ exports.booking_create_post = [
           if (!results.guest) {
             return next("no guest found");
           }
+          debug(req.body.start);
           const price =
             results.default_price *
             dateDiffInDays(req.body.start, req.body.end);
