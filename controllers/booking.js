@@ -52,7 +52,8 @@ exports.booking_create_post = [
     .toDate(),
   sanitizeBody("price")
     .trim()
-    .escape(),
+    .escape()
+    .toInt(),
   sanitizeBody("guest")
     .trim()
     .escape(),

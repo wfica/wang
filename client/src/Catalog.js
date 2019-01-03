@@ -9,6 +9,7 @@ import GuestUpdate from "./GuestUpdate";
 import Bookings from "./Bookings";
 import Booking from "./Booking";
 import BookingCreate from "./BookingCreate";
+import NightPrice from "./NightPrice";
 
 function NotImplemented() {
   return (
@@ -61,6 +62,14 @@ class Catalog extends Component {
               >
                 Utwórz rezerwację
               </NavItem>
+
+              <NavItem
+                componentClass={Link}
+                href="/catalog/price/update"
+                to="/catalog/price/update"
+              >
+                Aktualizuj ceny
+              </NavItem>
             </Nav>
           </Navbar>
 
@@ -81,6 +90,7 @@ class Catalog extends Component {
             <Route exact path="/catalog/guest/create" component={GuestCreate} />
             <Route exact path="/catalog/guest/update" component={GuestUpdate} />
             <Route exact path="/catalog/guest" component={Guest} />
+            <Route exact path="/catalog/price/update" component={NightPrice} />
             {/* <Redirect from="/" to="/calendar" />*/}
             <Route component={NotImplemented} />
           </Switch>
