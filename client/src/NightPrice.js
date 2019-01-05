@@ -36,6 +36,7 @@ class NightPrice extends Component {
     axios
       .post("/catalog/price/update", this.state)
       .then(response => {
+        console.log(response);
         if ("errors" in response.data) {
           this.setState({ errors: response.data.errors });
         } else {
@@ -49,12 +50,13 @@ class NightPrice extends Component {
     if (this.state.errors) {
       return <DbError alert={this.state.errors} />;
     }
+    console.log(this.state.updateSuccess);
     return (
       <div className="col-xs-12">
-        {this.state.deleteSuccess ? (
+        {this.state.updateSuccess ? (
           <Alert
             bsStyle="info"
-            onDismiss={this.setState({ updateSuccess: false })}
+            onDismiss={() => this.setState({ updateSuccess: false })}
           >
             Pomyślenie zaktualizowno cenę.
           </Alert>
@@ -84,8 +86,17 @@ class NightPrice extends Component {
             <Col sm={10}>
               <FormControl
                 type="date"
-                value={this.state.start}
-                onChange={event => this.setState({ start: event.target.value })}
+                value={this.state.start.toISOString().split("T")[0]}
+                onChange={event => {
+                  event.preventDefault();
+                  this.setState({
+                    start: isNaN(Date.parse(event.target.value))
+                      ? new Date()
+                      : new Date(event.target.value)
+                  });
+                  console.log(event);
+                  console.log(event.target.value);
+                }}
               />
               <FormControl.Feedback />
             </Col>
@@ -99,8 +110,14 @@ class NightPrice extends Component {
             <Col sm={10}>
               <FormControl
                 type="date"
-                value={this.state.end}
-                onChange={event => this.setState({ end: event.target.value })}
+                value={this.state.end.toISOString().split("T")[0]}
+                onChange={event =>
+                  this.setState({
+                    end: isNaN(Date.parse(event.target.value))
+                      ? new Date()
+                      : new Date(event.target.value)
+                  })
+                }
               />
               <FormControl.Feedback />
             </Col>
@@ -123,7 +140,7 @@ class NightPrice extends Component {
                   event.preventDefault();
                   console.log(event);
                   this.setState({
-                     price: Math.abs(Math.ceil(Number(event.target.value)))
+                    price: Math.abs(Math.ceil(Number(event.target.value)))
                     // price: event.target.value
                   });
                 }}

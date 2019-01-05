@@ -4,6 +4,7 @@ const { sanitizeBody } = require("express-validator/filter");
 const async = require("async");
 const { addDays } = require("date-fns");
 const R = require("ramda");
+const debug = require("debug")("wang:server");
 
 exports.prices = function(req, res, next) {
   NightPrice.find().exec(function(err, prices) {
@@ -34,16 +35,18 @@ exports.price_update_post = [
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      debug(errors);
       next(errors.array());
     } else {
       const dates = R.unfold(
         date => (date >= req.body.end ? false : [date, addDays(date, 1)]),
         req.body.start
       );
+      debug(dates);
       async.eachSeries(
         dates,
         (date, cb) => {
-          NightPrice.update(
+          NightPrice.updateOne(
             { date: date },
             { date: date, price: req.body.price },
             { upsert: true },
@@ -51,7 +54,10 @@ exports.price_update_post = [
           );
         },
         err => {
-          return next(err);
+          if (err !== null) {
+            debug(err);
+            return next(err);
+          }
         }
       );
       res.send({ updateSuccess: true });
