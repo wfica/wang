@@ -38,9 +38,15 @@ exports.price_update_post = [
       debug(errors);
       next(errors.array());
     } else {
+      // new start here to make sure we always insert date with the same hours
+      const start = new Date(
+        req.body.start.getFullYear(),
+        req.body.start.getMonth(),
+        req.body.start.getDate()
+      );
       const dates = R.unfold(
         date => (date >= req.body.end ? false : [date, addDays(date, 1)]),
-        req.body.start
+        start
       );
       debug(dates);
       async.eachSeries(

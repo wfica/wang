@@ -5,6 +5,7 @@ const router = express.Router();
 const guest_controller = require("../controllers/guest");
 const booking_controller = require("../controllers/booking");
 const night_price_controller= require("../controllers/night_price");
+const default_price_controller= require("../controllers/default_price");
 
 /// GUEST ROUTES ///
 
@@ -37,5 +38,8 @@ router.get("/prices", night_price_controller.prices);
 // POST request for creating a booking
 router.post("/price/update", night_price_controller.price_update_post);
 
+// DEFAULT PRICE ROUTES ///
 
+// GET request for default price
+router.get("/price/default", default_price_controller.price);
 module.exports = router;

@@ -4,6 +4,7 @@ import axios from "axios";
 import DbError from "./DbError";
 import utils from "./utils";
 import consts from "./consts";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 class CalendarHeader extends React.Component {
   render() {
@@ -76,6 +77,22 @@ class CalendarMonths extends React.Component {
         }));
         this.setState({ bookings_list: sanitized, db_error: null });
       })
+      .catch(err => this.setState({ db_error: err }));
+
+    axios
+      .get("/catalog/prices/")
+      .then(prices => {
+        const sanitized = prices.data.map(price => ({
+          date: new Date(price.date),
+          price: price.price
+        }));
+        this.setState({ prices: sanitized });
+      })
+      .catch(err => this.setState({ db_error: err }));
+
+    axios
+      .get("/catalog/price/default")
+      .then(price => this.setState({ default_price: price.data }))
       .catch(err => this.setState({ db_error: err }));
   }
 
@@ -227,6 +244,28 @@ class CalendarMonths extends React.Component {
     }
     const is_disabled = this.isDisabled(day);
     const is_booked = this.isNightBooked(day);
+    if (this.props.readOnly && !is_booked.is_booked) {
+      let price = 250;
+      if (this.state.default_price) {
+        price = this.state.default_price.price.$numberDecimal;
+      }
+      if (this.state.prices) {
+        const custom_price = this.state.prices.find(price =>
+          utils.sameDay(price.date, day)
+        );
+        if (custom_price) {
+          price = custom_price.price.$numberDecimal;
+        }
+      }
+      const tooltip = <Tooltip id="tooltip"> {price} zł </Tooltip>;
+      return (
+        <OverlayTrigger placement="bottom" overlay={tooltip}>
+          <td className={"day disabled " + is_booked.info}>
+            <div className="day-content">{day.getDate()}</div>
+          </td>
+        </OverlayTrigger>
+      );
+    }
     if (is_disabled || is_booked.is_booked) {
       return (
         <td className={"day disabled " + is_booked.info}>
