@@ -5,7 +5,8 @@ import {
   HelpBlock,
   Button,
   Alert,
-  FormControl
+  FormControl,
+  Checkbox
 } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Autocomplete from "react-autocomplete";
@@ -17,7 +18,8 @@ class BookingForm extends React.Component {
     super();
     this.state = {
       guest: null,
-      input: ""
+      input: "",
+      custom_price: false
     };
   }
 
@@ -78,6 +80,44 @@ class BookingForm extends React.Component {
           administratorem.
         </Alert>
       ) : null;
+    const custom_price_button = (
+      <Button
+        bsStyle="primary"
+        onClick={() => {
+          if (this.state.custom_price) {
+            this.props.findDefaultPrice();
+          }
+          this.setState((state, props) => ({
+            custom_price: !state.custom_price
+          }));
+        }}
+      >
+        {"Kliknij, by " +
+          (this.state.custom_price
+            ? "użyć domyślnej ceny."
+            : "samemu spisać cenę.")}
+      </Button>
+    );
+    const custom_price_checkbox = (
+      <Checkbox
+        checked={this.state.custom_price}
+        onClick={() => {
+          if (this.state.custom_price) {
+            this.props.findDefaultPrice();
+          }
+          this.setState((state, props) => ({
+            custom_price: !state.custom_price
+          }));
+        }}
+      >
+        <HelpBlock>
+          {"Kliknij aby " +
+            (this.state.custom_price
+              ? "użyć domyślnej ceny."
+              : "samemu wpisać cenę.")}
+        </HelpBlock>
+      </Checkbox>
+    );
     return this.props.booking ? (
       <Redirect
         to={{
@@ -97,10 +137,10 @@ class BookingForm extends React.Component {
             this.props.handleSubmit({ guest: this.state.guest });
           }}
         >
-          {" "}
+          <hr />
           {this.state.guests_list ? (
             <FormGroup>
-              <ControlLabel>Wybierz gościa</ControlLabel>
+              <ControlLabel> 2. Wybierz gościa</ControlLabel>
               <HelpBlock>
                 {" "}
                 Zacznij wpisywać imię bądź nazwisko, a następnie wybierz osobę z
@@ -150,10 +190,20 @@ class BookingForm extends React.Component {
               />
             </FormGroup>
           ) : null}
+          <hr />
+
           <FormGroup>
-            <ControlLabel> Cena </ControlLabel>
-            <FormControl disabled type="number" value={this.props.price} />
+            <ControlLabel> 3. Cena </ControlLabel>
+            <FormControl style={{width: "30%"}}
+              disabled={!this.state.custom_price}
+              type="number"
+              value={this.props.price}
+              onChange={event => this.props.handlePriceChange(event)}
+            />
           </FormGroup>
+
+          {custom_price_checkbox}
+
           <br />
           {submitButton}
         </form>

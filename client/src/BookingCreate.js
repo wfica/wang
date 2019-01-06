@@ -111,11 +111,21 @@ class BookingCreate extends React.Component {
       });
   };
 
+  handlePriceChange = (event) => {
+    event.preventDefault();
+    const price = Math.abs(parseInt(event.target.value));
+    if(isNaN(price)){
+      this.updatePrice();
+      return;
+    }
+    this.setState({price: price});
+  }
+
   render() {
     return (
       <div className="col-xs-12">
         <FormGroup>
-          <ControlLabel> Wybierz termin od-do</ControlLabel>
+          <ControlLabel> 1. Wybierz termin od-do</ControlLabel>
           <HelpBlock>
             {" "}
             Aby zmienić wybór kliknij na początek lub koniec wybranego terminu.
@@ -136,6 +146,8 @@ class BookingCreate extends React.Component {
           errors={this.state.errors}
           handleSubmit={this.handleSubmit}
           price={this.state.price}
+          handlePriceChange={this.handlePriceChange}
+          findDefaultPrice={this.updatePrice}
           days={this.state.clicked}
         />
       </div>
