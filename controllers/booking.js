@@ -1,6 +1,5 @@
 const Booking = require("../models/booking");
 const Guest = require("../models/guest");
-const DefaultPrice = require("../models/default_price");
 const { body, validationResult } = require("express-validator/check");
 const { sanitizeBody } = require("express-validator/filter");
 const async = require("async");
@@ -24,16 +23,6 @@ exports.bookings_list = function(req, res, next) {
 bookingsOverlap = (a, b) => {
   if (a.start > b.start) return bookingsOverlap(b, a);
   return a.end > b.start;
-};
-
-// a and b are javascript Date objects
-dateDiffInDays = (a, b) => {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  // Discard the time and time-zone information.
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 };
 
 //Handle booking create on post
@@ -68,9 +57,6 @@ exports.booking_create_post = [
           bookings: function(cb) {
             Booking.find().exec(cb);
           },
-          default_price: function(cb) {
-            DefaultPrice.find().exec(cb);
-          },
           guest: function(cb) {
             Guest.findById(req.body.guest).exec(cb);
           }
@@ -82,14 +68,10 @@ exports.booking_create_post = [
           if (!results.guest) {
             return next("no guest found");
           }
-          debug(req.body.start);
-          const price =
-            results.default_price *
-            dateDiffInDays(req.body.start, req.body.end);
           const newBooking = new Booking({
             start: req.body.start,
             end: req.body.end,
-            price: price,
+            price: req.body.price,
             guest: req.body.guest
           });
           const conflict = results.bookings.find(booking =>

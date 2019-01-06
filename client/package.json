@@ -9,6 +9,7 @@
     "moment": "^2.23.0",
     "node-sass": "^4.11.0",
     "prop-types": "^15.6.2",
+    "ramda": "^0.26.1",
     "react": "^16.7.0",
     "react-autocomplete": "^1.8.1",
     "react-bootstrap": "^0.32.4",

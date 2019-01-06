@@ -4,7 +4,8 @@ import {
   ControlLabel,
   HelpBlock,
   Button,
-  Alert
+  Alert,
+  FormControl
 } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import Autocomplete from "react-autocomplete";
@@ -28,7 +29,7 @@ class BookingForm extends React.Component {
   }
 
   validateForm = () => {
-    if (!this.state.guest) return false;
+    if (!this.state.guest || this.props.days.length !== 2) return false;
     return true;
   };
 
@@ -58,8 +59,7 @@ class BookingForm extends React.Component {
         Uzupełnj pola poprawnie
       </Button>
     );
-    
-    
+
     const errors =
       Array.isArray(this.props.errors) && this.props.errors.length > 0 ? (
         <div>
@@ -90,18 +90,22 @@ class BookingForm extends React.Component {
         }}
       />
     ) : (
-      <div className="col-xs-12">
+      <div>
         <form
           onSubmit={event => {
             event.preventDefault();
-            this.props.handleSubmit(this.state);
+            this.props.handleSubmit({ guest: this.state.guest });
           }}
         >
           {" "}
           {this.state.guests_list ? (
             <FormGroup>
               <ControlLabel>Wybierz gościa</ControlLabel>
-              <HelpBlock> Zacznij wpisywać imię bądź nazwisko, a następnie wybierz osobę z listy.</HelpBlock>
+              <HelpBlock>
+                {" "}
+                Zacznij wpisywać imię bądź nazwisko, a następnie wybierz osobę z
+                listy.
+              </HelpBlock>
               <Autocomplete
                 wrapperStyle={{ position: "relative", display: "inline-block" }}
                 value={this.state.input}
@@ -126,13 +130,12 @@ class BookingForm extends React.Component {
                       lists.splice(-1, 1);
                     }
                     lists.push(this.matchInput(value));
-                    
+
                     return { input: value, guests_list: lists, guest: null };
                   });
                 }}
                 renderMenu={children => <div className="menu">{children}</div>}
                 renderItem={(item, isHighlighted) => {
-                  
                   return (
                     <div
                       className={
@@ -147,6 +150,10 @@ class BookingForm extends React.Component {
               />
             </FormGroup>
           ) : null}
+          <FormGroup>
+            <ControlLabel> Cena </ControlLabel>
+            <FormControl disabled type="number" value={this.props.price} />
+          </FormGroup>
           <br />
           {submitButton}
         </form>
